@@ -1,0 +1,47 @@
+
+#episodeWindowVideo{
+    position: fixed;
+    display: flex;
+    left: 25%;
+    top:24%;
+    background-color: #00000088;
+    height: 50%;
+    width: 50%;
+    z-index: 5;
+}
+
+#video-content {
+    width: 100%;
+    height: auto;
+}
+
+#img-content {
+    width: 100%;
+    height: auto;
+}
+#episodeWindowVideo button{
+    position: absolute;
+    left: 97%;
+    top : -4%;
+    border-width: 0;
+    background-color: #ffffff00;
+}
+
+#episodeWindowVideo button img{
+    /* width: 10%; */
+    height: 35px;
+}
+#episodeWindowVideo video{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0%;
+}
+#episodeWindowVideo h1{
+    font-family: 'Roboto';
+    /* text-align: right; */
+    padding: 5px;
+    /* font-weight: bold; */
+    font-size: 3vh;
+    color: #ffffff;
+}

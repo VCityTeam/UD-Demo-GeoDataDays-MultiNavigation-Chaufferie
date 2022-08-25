@@ -1,6 +1,8 @@
 /** @format */
 
 import * as udviz from 'ud-viz';
+import { MultiMediaVisualizer } from './MultiMediaVisualizer';
+import { MultiMediaObject } from './MultiMediaObject';
 
 const app = new udviz.Templates.AllWidget();
 
