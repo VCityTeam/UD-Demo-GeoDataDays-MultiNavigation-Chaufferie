@@ -19,6 +19,7 @@ export class MultiMediaObject {
     this.text = dataContent['text'];
     this.src = dataContent['src'];
     this.ParseImgContent(dataContent);
+    console.log('object');
   }
 
   /**
