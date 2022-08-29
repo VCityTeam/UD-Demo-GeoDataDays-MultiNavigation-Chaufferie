@@ -7,10 +7,10 @@
             "y" : "5174466.312225383",
             "z" : "220"
           },
-          "imgThumbnail":"https://projet.liris.cnrs.fr/vcity/vcity.png",
-          "imgContent":"https://projet.liris.cnrs.fr/vcity/vcity.png",
-          "text": "Vallée de la chimie - Observatoire photographique par FlorentPERROUDCAUE69",
-          "src":"https://umap.openstreetmap.fr/fr/map/vallee-de-la-chimie-observatoire-photographique_233823#18/45.68050/4.86110"
+          "imgThumbnail":"./assets/img/fourviere-5-1024x597.png",
+          "imgContent":"./assets/img/fourviere-5-1024x597.png",
+          "text": "Photo test",
+          "src":""
         }
     }
 }

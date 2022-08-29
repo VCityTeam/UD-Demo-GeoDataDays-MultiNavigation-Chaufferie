@@ -13,7 +13,9 @@ app.start('../assets/config/config.json').then((config) => {
     '../assets/config/configMultimedia.json'
   ).then(function (configMultimedia){
     let multimedia1 = new MultiMediaObject(configMultimedia['multimedia-data']['content-1'], false);
-    const multimediaVisu = new MultiMediaVisualizer('content 1', app.view, multimedia1);
+    let listMultimedia = [];
+    listMultimedia.push(multimedia1);
+    const multimediaVisu = new MultiMediaVisualizer('content 1', app.view3D, listMultimedia);
     multimediaVisu.constructAllContent(true);
     
     ////// REQUEST SERVICE

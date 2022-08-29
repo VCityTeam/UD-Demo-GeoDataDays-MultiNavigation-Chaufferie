@@ -72,7 +72,7 @@ export class MultiMediaVisualizer {
     // Interactive content HMTL
     let divInteractiveContent = document.createElement('div');
     divInteractiveContent.id = 'episodeWindowVideo';
-    document.getElementById('webgl_View3D').append(divInteractiveContent);
+    document.getElementById('viewerDiv').append(divInteractiveContent);
     divInteractiveContent.innerHTML = 
       '<h1 id="resumeVideo"></h1>\
       <img id="img-content" src=""></img>\
@@ -101,6 +101,7 @@ export class MultiMediaVisualizer {
      * Method to construct all the content of an episode 
   */
   constructAllContent(visibility){
+    console.log(this.listContents);
     for (let index = 0; index < this.listContents.length; index++) {
       const element = this.listContents[index];
       let pinObjets = this.createPin(element, element.imgThumbnail);
