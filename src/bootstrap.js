@@ -14,7 +14,6 @@ app.start('../assets/config/config.json').then((config) => {
   ).then(function (configMultimedia){
     let multimedia1 = new MultiMediaObject(configMultimedia['multimedia-data']['content-1'], false);
     const multimediaVisu = new MultiMediaVisualizer('content 1', app.view, multimedia1);
-    console.log(app.view3D);
     multimediaVisu.constructAllContent(true);
     
     ////// REQUEST SERVICE
@@ -27,34 +26,6 @@ app.start('../assets/config/config.json').then((config) => {
     ////// HELP MODULE
     const help = new udviz.Widgets.Extensions.HelpWindow(config.helpWindow);
     app.addModuleView('help', help);
-
-    ////// AUTHENTICATION MODULE
-    const authenticationService =
-      new udviz.Widgets.Extensions.AuthenticationService(
-        requestService,
-        app.config
-      );
-
-    const authenticationView = new udviz.Widgets.Extensions.AuthenticationView(
-      authenticationService
-    );
-    app.addModuleView('authentication', authenticationView, {
-      type: udviz.Templates.AllWidget.AUTHENTICATION_MODULE,
-    });
-
-    ////// DOCUMENTS MODULE
-    let documentModule = new udviz.Widgets.DocumentModule(
-      requestService,
-      app.config
-    );
-    app.addModuleView('documents', documentModule.view);
-
-    ////// DOCUMENTS VISUALIZER EXTENSION (to orient the document)
-    const imageOrienter = new udviz.Widgets.DocumentVisualizerWindow(
-      documentModule,
-      app.view,
-      app.controls
-    );
 
     ////// CITY OBJECTS MODULE
     let cityObjectModule = new udviz.Widgets.CityObjectModule(
