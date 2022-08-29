@@ -1,14 +1,14 @@
 {
-    "episode-1-data":{
+    "multimedia-data":{
         "content-1" :{
           "lock" : false,
           "position" :{
-            "x" : "1843554.77",
-            "y" : "5165405.73",
+            "x" : "1842080.0088028954",
+            "y" : "5174466.312225383",
             "z" : "220"
           },
-          "imgThumbnail":"./assets/img/Observatoire/cheminee.jpg",
-          "imgContent":"./assets/img/Observatoire/cheminee.jpg",
+          "imgThumbnail":"https://projet.liris.cnrs.fr/vcity/vcity.png",
+          "imgContent":"https://projet.liris.cnrs.fr/vcity/vcity.png",
           "text": "Vallée de la chimie - Observatoire photographique par FlorentPERROUDCAUE69",
           "src":"https://umap.openstreetmap.fr/fr/map/vallee-de-la-chimie-observatoire-photographique_233823#18/45.68050/4.86110"
         }

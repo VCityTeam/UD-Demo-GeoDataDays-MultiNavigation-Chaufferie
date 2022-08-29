@@ -109,6 +109,7 @@ export class MultiMediaVisualizer {
       pinObjets[1].visible = visibility;
       this.pictureObjects.push(pinObjets[0]);
       this.pinsSprite.push(pinObjets[1]);
+      console.log('hello');
     }
   }
     
