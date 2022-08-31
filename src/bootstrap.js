@@ -1,13 +1,15 @@
 /** @format */
 
 import * as udviz from 'ud-viz';
-import { MultiMediaVisualizer } from './MultiMediaVisualizer';
-import { MultiMediaObject } from './MultiMediaObject';
+import { MultiMediaVisualizer } from './Multimedia/MultiMediaVisualizer';
+import { MultiMediaObject } from './Multimedia/MultiMediaObject';
+import {LayerChoiceIfcExtension} from './Ifc/LayerChoiceExtension';
+import { IfcAttributeModule } from './Ifc/IfcAttribute/IfcAttributeModule';
 
 const app = new udviz.Templates.AllWidget();
 
 app.start('../assets/config/config.json').then((config) => {
-  
+
 
   udviz.Components.SystemUtils.File.loadJSON(
     '../assets/config/configMultimedia.json'
@@ -51,12 +53,20 @@ app.start('../assets/config/config.json').then((config) => {
     app.addModuleView('cameraPositioner', cameraPosition);
 
     ////// LAYER CHOICE MODULE
-    const layerChoice = new udviz.Widgets.LayerChoice(app.layerManager);
+    const layerChoice = new udviz.Widgets.LayerChoice(app.view3D.layerManager);
     app.addModuleView('layerChoice', layerChoice);
+
+    ////// IFC EXTENSION OF LAYER CHOICE MODULE
+    const layerChoiceIfcExtension = new LayerChoiceIfcExtension(layerChoice,app.config);
+
+    ///// IFC EXTENSION OF CITYOBJECT MODULE
+    const ifcAttributeModule = new IfcAttributeModule(cityObjectModule);
 
     const inputManager = new udviz.Components.InputManager();
     ///// SLIDESHOW MODULE
     const slideShow = new udviz.Widgets.SlideShow(app, inputManager);
     app.addModuleView('slideShow', slideShow);
+
+
   });
 });

@@ -9,21 +9,22 @@
   },
   "3DTilesLayers": [
     {
-      "id": "Lyon-1",
-      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-1_2015/tileset.json",
+      "id": "Villeurbanne_2018",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/Villeurbanne_2018_TileSet/tileset.json",
       "color": "0xFFFFFF"
     },
     {
-      "id": "Lyon-2",
-      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-2_2015/tileset.json",
-      "color": "0xFFFFFF"
+      "id": "ifc_chaufferie_doua",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/ifc_chaufferie_doua/tileset.json",
+      "color": "0xFFFFFF",
+      "ifc": "true"
     }
   ],
   "extents": {
-    "min_x": "1837860.980127206",
-    "max_x": "1851647",
-    "min_y": "5169347.4265999",
-    "max_y": "5180575"
+    "min_x": "1716160",
+    "max_x": "1981647",
+    "min_y": "5069347",
+    "max_y": "5280575"
   },
   "projection": "EPSG:3946",
   "background_image_layer": {
@@ -32,7 +33,8 @@
     "version": "1.3.0",
     "format": "image/jpeg",
     "layer_name": "Base_Map",
-    "transparent": true
+    "transparent": true,
+    "maxSubdivisionLevel": 10
   },
   "elevation_layer": {
     "url": "https://download.data.grandlyon.com/wms/grandlyon",

@@ -1,4 +1,4 @@
-import '../assets/css/multimedia-window.css';
+import '../../assets/css/multimedia-window.css';
 import * as THREE from 'three';
 import * as udviz from 'ud-viz';
 import { View3D } from 'ud-viz/src/Views/Views';
