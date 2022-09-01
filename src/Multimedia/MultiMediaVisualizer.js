@@ -68,7 +68,7 @@ export class MultiMediaVisualizer {
   }
 
   // Create HMTL div to visualize details of the episode container
-  constructHtmlVideos(){
+  constructHtml(){
     // Interactive content HMTL
     let divInteractiveContent = document.createElement('div');
     divInteractiveContent.id = 'episodeWindowVideo';

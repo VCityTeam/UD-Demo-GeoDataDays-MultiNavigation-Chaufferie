@@ -14,12 +14,7 @@ app.start('../assets/config/config.json').then((config) => {
   udviz.Components.SystemUtils.File.loadJSON(
     '../assets/config/configMultimedia.json'
   ).then(function (configMultimedia){
-    let multimedia1 = new MultiMediaObject(configMultimedia['multimedia-data']['content-1'], false);
-    let listMultimedia = [];
-    listMultimedia.push(multimedia1);
-    const multimediaVisu = new MultiMediaVisualizer('content 1', app.view3D, listMultimedia);
-    multimediaVisu.constructAllContent(true);
-    
+
     ////// REQUEST SERVICE
     const requestService = new udviz.Components.RequestService();
 
@@ -67,6 +62,55 @@ app.start('../assets/config/config.json').then((config) => {
     const slideShow = new udviz.Widgets.SlideShow(app, inputManager);
     app.addModuleView('slideShow', slideShow);
 
+
+    ///// MULTIMEDIA MODULE
+    let multimedia1 = new MultiMediaObject(configMultimedia['multimedia-data']['content-1'], false);
+    let listMultimedia = [];
+    let multimediaObjectList = []
+    listMultimedia.push(multimedia1);
+    const multimediaVisu = new MultiMediaVisualizer('content 1', app.view3D, listMultimedia);
+    multimediaVisu.constructAllContent(true);
+    Array.prototype.push.apply(multimediaObjectList, multimediaVisu.pictureObjects);
+    multimediaVisu.constructHtml();
+      
+    app.view3D.html().addEventListener( 'click', onDocumentMouseClick );
+
+       //Event to display multimedia content
+    function onDocumentMouseClick( event ) {    
+      event.preventDefault(); 
+
+      let raycaster =  new udviz.THREE.Raycaster();
+      let mouse3D = new udviz.THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1,   
+        -( event.clientY / window.innerHeight ) * 2 + 1,  
+        0.5 );                                        
+      raycaster.setFromCamera( mouse3D, app.view3D.getCamera() );
+     
+      let intersects = raycaster.intersectObjects( multimediaObjectList );
+
+      if ( intersects.length > 0 ){
+        intersects.forEach(elementIntersect => {
+          //check visibility to not intersect with hidden object
+          if(elementIntersect.object.visible == true){
+            let multimediaObject = elementIntersect.object.userData.multimediaObject;
+            document.getElementById('resumeVideo').textContent = multimediaObject.text;
+            document.getElementById('episodeWindowVideo').hidden = false;
+            document.getElementById('episodeWindowVideo').style.display = 'block';
+
+            // Check if the multimedia is a video or not and change integration
+            if (multimediaObject.isVideo){             
+              document.getElementById('video-content').hidden = false;
+              document.getElementById('video-content').src = multimediaObject.imgContent;
+              
+            }else{
+              document.getElementById('video-content').hidden = true;
+              document.getElementById('img-content').src = multimediaObject.imgContent;
+            }
+            //Change color when the multimedia is consume 
+            elementIntersect.object.material.color.setRGB(0.3, 0.3, 0.3);
+          }
+        });
+      }
+    }
 
   });
 });
