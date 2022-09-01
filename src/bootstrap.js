@@ -72,44 +72,13 @@ app.start('../assets/config/config.json').then((config) => {
     multimediaVisu.constructAllContent(true);
     Array.prototype.push.apply(multimediaObjectList, multimediaVisu.pictureObjects);
     multimediaVisu.constructHtml();
-      
-    app.view3D.html().addEventListener( 'click', onDocumentMouseClick );
 
-       //Event to display multimedia content
-    function onDocumentMouseClick( event ) {    
-      event.preventDefault(); 
+    app.view3D.html().addEventListener( 'click', multimediaVisu.onDocumentMouseClick );
+    app.view3D.html().addEventListener( 'click', onDocumentMouseClickTest );
 
-      let raycaster =  new udviz.THREE.Raycaster();
-      let mouse3D = new udviz.THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1,   
-        -( event.clientY / window.innerHeight ) * 2 + 1,  
-        0.5 );                                        
-      raycaster.setFromCamera( mouse3D, app.view3D.getCamera() );
-     
-      let intersects = raycaster.intersectObjects( multimediaObjectList );
-
-      if ( intersects.length > 0 ){
-        intersects.forEach(elementIntersect => {
-          //check visibility to not intersect with hidden object
-          if(elementIntersect.object.visible == true){
-            let multimediaObject = elementIntersect.object.userData.multimediaObject;
-            document.getElementById('resumeVideo').textContent = multimediaObject.text;
-            document.getElementById('episodeWindowVideo').hidden = false;
-            document.getElementById('episodeWindowVideo').style.display = 'block';
-
-            // Check if the multimedia is a video or not and change integration
-            if (multimediaObject.isVideo){             
-              document.getElementById('video-content').hidden = false;
-              document.getElementById('video-content').src = multimediaObject.imgContent;
-              
-            }else{
-              document.getElementById('video-content').hidden = true;
-              document.getElementById('img-content').src = multimediaObject.imgContent;
-            }
-            //Change color when the multimedia is consume 
-            elementIntersect.object.material.color.setRGB(0.3, 0.3, 0.3);
-          }
-        });
-      }
+    function onDocumentMouseClickTest( event ) {    
+      event.preventDefault();
+      console.log('some click');
     }
 
   });
