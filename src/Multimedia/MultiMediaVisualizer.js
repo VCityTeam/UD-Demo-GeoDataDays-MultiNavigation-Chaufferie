@@ -115,12 +115,12 @@ export class MultiMediaVisualizer {
 
   onDocumentMouseClick( event ) {    
     event.preventDefault();
-    console.log(this.getView3D());
     let raycaster =  new udviz.THREE.Raycaster();
     let mouse3D = new udviz.THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1,   
       -( event.clientY / window.innerHeight ) * 2 + 1,  
-      0.5 );                                        
-    raycaster.setFromCamera( mouse3D, this.getView3D().getCamera() );
+      0.5 ); 
+      console.log('view3D');                                       
+    raycaster.setFromCamera( mouse3D, this.view3D.getCamera() );
    
     let intersects = raycaster.intersectObjects( this.getPinsObject() );
     if ( intersects.length > 0 ){

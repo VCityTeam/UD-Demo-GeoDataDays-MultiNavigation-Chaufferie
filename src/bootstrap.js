@@ -74,7 +74,6 @@ app.start('../assets/config/config.json').then((config) => {
     multimediaVisu.constructHtml();
 
     app.view3D.html().addEventListener( 'click', multimediaVisu.onDocumentMouseClick );
-    app.view3D.html().addEventListener( 'click', onDocumentMouseClickTest );
 
     function onDocumentMouseClickTest( event ) {    
       event.preventDefault();
