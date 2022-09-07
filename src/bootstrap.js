@@ -5,6 +5,7 @@ import { MultiMediaVisualizer } from './Multimedia/MultiMediaVisualizer';
 import { MultiMediaObject } from './Multimedia/MultiMediaObject';
 import {LayerChoiceIfcExtension} from './Ifc/LayerChoiceExtension';
 import { IfcAttributeModule } from './Ifc/IfcAttribute/IfcAttributeModule';
+import { SparqlModule } from './SPARQL/SparqlModule';
 
 const app = new udviz.Templates.AllWidget();
 
@@ -82,6 +83,14 @@ app.start('../assets/config/config.json').then((config) => {
 
     // app.view3D.html().addEventListener( 'click', multimediaVisu.onDocumentMouseClick );
 
+    ////// SPARQL MODULE
+    const sparqlModule = new SparqlModule(
+      app.config,
+      app.view3D.getLayerManager()
+    );
+    app.addModuleView('sparqlModule', sparqlModule.view, {
+      name: 'SPARQL Query',
+    });
 
   });
 });
