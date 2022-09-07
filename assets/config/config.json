@@ -9,6 +9,12 @@
   },
   "3DTilesLayers": [
     {
+      "id": "Villeurbanne temporel",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/la-doua_2009-2018-temporal_tileset/tileset.json",
+      "color": "0xFFFFFF",
+      "extensions": ["3DTILES_temporal"]
+    },
+    {
       "id": "Villeurbanne_2018",
       "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/Villeurbanne_2018_TileSet/tileset.json",
       "color": "0xFFFFFF"
@@ -58,7 +64,7 @@
   "temporalModule": {
     "view": "SLIDERWINDOW",
     "minTime": 2009,
-    "maxTime": 2015,
+    "maxTime": 2018,
     "currentTime": 2009,
     "timeStep": 1
   },
