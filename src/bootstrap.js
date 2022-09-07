@@ -62,6 +62,13 @@ app.start('../assets/config/config.json').then((config) => {
     const slideShow = new udviz.Widgets.SlideShow(app, inputManager);
     app.addModuleView('slideShow', slideShow);
 
+    ////// TEMPORAL MODULE
+    const temporalModule = new udviz.Widgets.TemporalModule(
+      app.view3D.getLayerManager().tilesManagers[0],
+      app.config.temporalModule
+    );
+    app.addModuleView('temporal', temporalModule.view);
+
 
     ///// MULTIMEDIA MODULE
     let multimedia1 = new MultiMediaObject(configMultimedia['multimedia-data']['content-1'], false);
@@ -71,14 +78,10 @@ app.start('../assets/config/config.json').then((config) => {
     const multimediaVisu = new MultiMediaVisualizer('content 1', app.view3D, listMultimedia);
     multimediaVisu.constructAllContent(true);
     Array.prototype.push.apply(multimediaObjectList, multimediaVisu.pictureObjects);
-    multimediaVisu.constructHtml();
+    // multimediaVisu.constructHtml();
 
-    app.view3D.html().addEventListener( 'click', multimediaVisu.onDocumentMouseClick );
+    // app.view3D.html().addEventListener( 'click', multimediaVisu.onDocumentMouseClick );
 
-    function onDocumentMouseClickTest( event ) {    
-      event.preventDefault();
-      console.log('some click');
-    }
 
   });
 });
