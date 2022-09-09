@@ -1,7 +1,7 @@
 {
-  "name": "app_name",
+  "name": "ud_demo_geodatadays_multinavigation",
   "version": "1.0.0",
-  "description": "udv game editor",
+  "description": "udv demo with temporal, ifc, geojson, and graph data",
   "main": "./src/bootstrap.js",
   "scripts": {
     "travis": "npm run eslint && npm run build",

@@ -113,7 +113,7 @@
     "timeStep": 1
   },
   "sparqlModule": {
-    "url": "http://localhost:8997/strabon/",
+    "url": "http://localhost:8001/strabon/",
     "url_parameters": "Query?handle=download&format=SPARQL/JSON&view=HTML&query="
   },
   "cityObjects": {
