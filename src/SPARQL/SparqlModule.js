@@ -1,7 +1,8 @@
 import { SparqlEndpointResponseProvider } from './ViewModel/SparqlEndpointResponseProvider';
 import { SparqlModuleView } from './View/SparqlModuleView';
 import { LayerManager } from 'ud-viz/src/Components/Components';
-import { CityObjectProvider } from 'ud-viz/src/Widgets/CityObjects/ViewModel/CityObjectProvider';
+import { CityObjectProviderPatch } from '../CityObjectProviderPatch';
+// import { CityObjectProvider } from 'ud-viz/src/Widgets/CityObjects/ViewModel/CityObjectProvider';
 
 /**
  * The SPARQL module class used to initialize the SPARQL widget
@@ -15,8 +16,14 @@ export class SparqlModule {
    * @param {string} config.sparqlModule.url The SPARQL endpoint url.
    * @param {LayerManager} layerManager The UD-Viz LayerManager.
    */
-  constructor(config, layerManager) {
+  constructor(config, layerManager, view) {
     this.config = config;
+
+    /**
+     * Manages data layers visualized in the application.
+     *
+     * @type {LayerManager}
+     */    
     this.layerManager = layerManager;
 
     /**
@@ -29,9 +36,9 @@ export class SparqlModule {
     /**
      * Provides CityObjects based on mouse event positions or batch table data.
      *
-     * @type {CityObjectProvider}
+     * @type {CityObjectProviderPatch}
      */
-    this.cityObjectProvider = new CityObjectProvider(this.layerManager);
+    this.cityObjectProvider = new CityObjectProviderPatch(this.layerManager);
 
     /**
      * Contains a SparqlModuleView for managing the user interface and view.

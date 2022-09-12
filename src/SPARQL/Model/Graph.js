@@ -79,8 +79,8 @@ export class Graph {
       .attr('stroke-width', 0.75)
       .attr('stroke', (d) => setColor(d.color_id, '#ddd', '#111'))
       .attr('fill', (d) => setColor(d.color_id, 'black'))
-      .on('click', (d) => {
-        this.window.sendEvent(Graph.EVENT_NODE_CLICKED, d.path[0].textContent);
+      .on('click', (event) => {
+        this.window.sendEvent(Graph.EVENT_NODE_CLICKED, event.path[0].textContent);
       })
       .on('mouseover', (event, d) => {
         event.target.style['stroke'] = setColor(nodes[d.index].color_id, 'white', 'white');
@@ -93,6 +93,7 @@ export class Graph {
           return d.index == e.source.index || d.index == e.target.index;
         })
           .style('fill', 'white');
+        this.window.sendEvent(Graph.EVENT_NODE_MOUSEOVER, event.path[0].textContent);
       })
       .on('mouseout', (event, d) => {
         event.target.style['stroke'] = setColor(nodes[d.index].color_id, '#ddd', '#111');
@@ -105,6 +106,7 @@ export class Graph {
           return d.index == e.source.index || d.index == e.target.index;
         })
           .style('fill', 'grey');
+          this.window.sendEvent(Graph.EVENT_NODE_MOUSEOUT, event.path[0].textContent);
       })
       .call(this.drag(simulation));
       

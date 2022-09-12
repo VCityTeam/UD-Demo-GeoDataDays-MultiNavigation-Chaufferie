@@ -4,8 +4,10 @@ import { Graph } from '../Model/Graph';
 import { Table } from '../Model/Table';
 import * as URI from '../Model/URI';
 import { LayerManager } from 'ud-viz/src/Components/Components';
-import { CityObjectProvider } from 'ud-viz/src/Widgets/CityObjects/ViewModel/CityObjectProvider';
+import { CityObjectProviderPatch } from '../../CityObjectProviderPatch';
+// import { CityObjectProvider } from 'ud-viz/src/Widgets/CityObjects/ViewModel/CityObjectProvider';
 import { JsonRenderer } from './JsonRenderer';
+import { focusCameraOn } from 'ud-viz/src/Components/Camera/CameraUtils';
 import './SparqlQueryWindow.css';
 
 /**
@@ -16,8 +18,8 @@ export class SparqlQueryWindow extends Window {
   /**
    * Creates a SPARQL query window.
    * @param {SparqlEndpointResponseProvider} sparqlProvider The SPARQL Endpoint Response Provider
-   * @param {CityObjectProvider} cityObjectProvider The City Object Provider
-   * @param {LayerManager} layerManager The UD-Viz LayerManager.
+   * @param {CityObjectProviderPatch} cityObjectProvider The City Object Provider
+   * @param {LayerManager} LayerManager The UD-Viz LayerManager.
    */
   constructor(sparqlProvider, cityObjectProvider, layerManager) {
     super('sparqlQueryWindow', 'Data Explorer');
@@ -32,7 +34,7 @@ export class SparqlQueryWindow extends Window {
     /**
      * The Extended City Object Provider
      *
-     * @type {CityObjectProvider}
+     * @type {CityObjectProviderPatch}
      */
     this.cityObjectProvider = cityObjectProvider;
 
@@ -70,6 +72,8 @@ export class SparqlQueryWindow extends Window {
      */
     
     this.registerEvent(Graph.EVENT_NODE_CLICKED);
+    this.registerEvent(Graph.EVENT_NODE_MOUSEOVER);
+    this.registerEvent(Graph.EVENT_NODE_MOUSEOUT);
     this.registerEvent(Table.EVENT_CELL_CLICKED);
   }
 
@@ -94,11 +98,29 @@ export class SparqlQueryWindow extends Window {
         )
     );
 
-    this.addEventListener(Graph.EVENT_NODE_CLICKED, (node_text) =>
+    this.addEventListener(Graph.EVENT_NODE_CLICKED, (node_text) => {
+      this.cityObjectProvider.selectCityObjectByBatchTable(
+        'gml_id',
+        URI.tokenizeURI(node_text).id
+      );
+      let tilesManagerAndcityObject = this.cityObjectProvider.pickCityObjectByBatchTablePatch(
+        'gml_id',
+        URI.tokenizeURI(node_text).id
+      )
+      if (tilesManagerAndcityObject && tilesManagerAndcityObject[1]) {
+        focusCameraOn(this.layerManager.view, this.layerManager.view.controls, tilesManagerAndcityObject[1].centroid);
+      }
+    });
+
+    this.addEventListener(Graph.EVENT_NODE_MOUSEOVER, (node_text) =>
       this.cityObjectProvider.selectCityObjectByBatchTable(
         'gml_id',
         URI.tokenizeURI(node_text).id
       )
+    );
+
+    this.addEventListener(Graph.EVENT_NODE_MOUSEOUT, () =>
+      this.cityObjectProvider.unselectCityObject()
     );
 
     this.addEventListener(Table.EVENT_CELL_CLICKED, (cell_text) =>
@@ -226,7 +248,7 @@ WHERE {
   ?subject a ?subjectType .
   ?object a bldg:Building .
   ?object a ?objectType .
-  data:version_2018 vers:Version.versionMember ?object .
+  data:version_2012 vers:Version.versionMember ?object .
   
   FILTER(?subjectType != owl:NamedIndividual)
   FILTER(?objectType != owl:NamedIndividual)

@@ -4,16 +4,14 @@ FROM bde2020/strabon
 ADD web.xml /tomcat/conf/web.xml
 
 # Download RDF datasets
-                                       # ifc_doua.rdf
-                                       # https://partage.liris.cnrs.fr/index.php/f/200057340
 RUN wget --output-document=/ifc_doua.rdf https://partage.liris.cnrs.fr/index.php/s/PsDzN27tqSQg3CW/download/ifc_doua.rdf
-                                      # DOUA_BATI_2009_stripped_split.rdf
-                                      # DOUA_BATI_2012_stripped_split.rdf
-                                      # DOUA_BATI_2015_stripped_split.rdf
-                                      # DOUA_BATI_2018_stripped_split.rdf
-                                      # DOUA_2009-2018_Workspace.rdf
-                                      # https://partage.liris.cnrs.fr/index.php/f/200057887
+    # ifc_doua.rdf
 RUN wget --output-document=/la_doua.zip https://partage.liris.cnrs.fr/index.php/s/RAakYgzR8wno6SM/download
+    # DOUA_BATI_2009_stripped_split.rdf
+    # DOUA_BATI_2012_stripped_split.rdf
+    # DOUA_BATI_2015_stripped_split.rdf
+    # DOUA_BATI_2018_stripped_split.rdf
+    # DOUA_2009-2018_Workspace.rdf
 
 # Cleanup
 RUN unzip /la_doua.zip && \
