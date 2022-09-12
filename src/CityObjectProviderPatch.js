@@ -53,7 +53,7 @@ export class CityObjectProviderPatch extends CityObjectProvider {
       if (tilesManager.tiles){
         for (let tile of tilesManager.tiles) {
           if (tile){
-            if (tile.cityObjects && tile.batchTable && tile.batchTable.content) {
+            if (tile.cityObjects && tile.batchTable) {
               if (tile.batchTable.content[batchTableKey]) {
                 if (tile.batchTable.content[batchTableKey].includes(batchTableValue)){
                   return [tilesManager,tile.cityObjects[tile.batchTable.content[batchTableKey].indexOf(batchTableValue)]];
