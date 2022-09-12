@@ -89,7 +89,7 @@ app.start('../assets/config/config.json').then((config) => {
       app.view3D.getLayerManager()
     );
     app.addModuleView('sparqlModule', sparqlModule.view, {
-      name: 'SPARQL Query',
+      name: 'Data Explorer',
     });
 
   });

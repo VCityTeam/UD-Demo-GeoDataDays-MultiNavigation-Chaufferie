@@ -46,37 +46,12 @@ PREFIX v2018: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2018_stripped_spl
 
 SELECT DISTINCT ?subject ?subjectType ?predicate ?object ?objectType
 WHERE {
-  {
-    ?subject a wksp:Workspace ;
-      ?predicate ?object .
-    ?subject a ?subjectType .
-    ?object a wksp:ConcensusSpace .
-    ?object a ?objectType .
-  } UNION {
-    ?subject a wksp:ConcensusSpace ;
-      ?predicate ?object .
-    ?subject a ?subjectType .
-    ?object a wksp:Scenario .
-    ?object a ?objectType .
-  } UNION {
-    ?subject a wksp:Scenario ;
-      ?predicate ?object .
-    ?subject a ?subjectType .
-    ?object a vers:Version .
-    ?object a ?objectType .
-  } UNION {
-    ?subject a wksp:Scenario ;
-      ?predicate ?object .
-    ?subject a ?subjectType .
-    ?object a vers:VersionTransition .
-    ?object a ?objectType .
-  } UNION {
     ?subject a vers:VersionTransition ;
       ?predicate ?object .
     ?subject a ?subjectType .
     ?object a vers:Version .
     ?object a ?objectType .
-  }
+
   FILTER(?subjectType != owl:NamedIndividual)
   FILTER(?objectType != owl:NamedIndividual)
 }

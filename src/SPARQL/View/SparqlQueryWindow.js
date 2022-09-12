@@ -20,7 +20,7 @@ export class SparqlQueryWindow extends Window {
    * @param {LayerManager} layerManager The UD-Viz LayerManager.
    */
   constructor(sparqlProvider, cityObjectProvider, layerManager) {
-    super('sparqlQueryWindow', 'SPARQL Query');
+    super('sparqlQueryWindow', 'Data Explorer');
 
     /**
      * The SPARQL Endpoint Response Provider
@@ -68,29 +68,7 @@ export class SparqlQueryWindow extends Window {
      *
      * @type {string}
      */
-    this.default_query = `PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX owl:  <http://www.w3.org/2002/07/owl#>
-PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
-PREFIX gmlowl:  <http://www.opengis.net/ont/gml#>
-PREFIX units: <http://www.opengis.net/def/uom/OGC/1.0/>
-PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
-PREFIX core: <http://www.opengis.net/citygml/2.0/core#>
-PREFIX bldg: <http://www.opengis.net/citygml/building/2.0/building#>
-
-# Return all CityGML City Objects
-SELECT *
-WHERE {
-  ?subject a core:CityModel ;
-    ?predicate ?object .
-  ?subject a ?subjectType .
-  ?object a bldg:Building .
-  ?object a ?objectType .
-  
-  FILTER(?subjectType != owl:NamedIndividual)
-  FILTER(?objectType != owl:NamedIndividual)
-}
-LIMIT 100`;
+    
     this.registerEvent(Graph.EVENT_NODE_CLICKED);
     this.registerEvent(Table.EVENT_CELL_CLICKED);
   }
@@ -174,20 +152,87 @@ LIMIT 100`;
   // SPARQL Window getters //
   get innerContentHtml() {
     return /*html*/ `
+    <label>Select Query: </label>
+      <select id="${this.querySelectId}">
+      <option value="search">Feature Search</option>
+        <option value="versions">Versions</option>
+        <option value="custom">Custom</option>
+      </select>
+      <hr/>
       <form id=${this.formId}>
         <label for="${this.queryTextAreaId}">Query:</label></br>
-        <textarea id="${this.queryTextAreaId}" rows="20">${this.default_query}</textarea></br>
-        <input id="${this.queryButtonId}" type="submit" value="Send"/>
+        <textarea id="${this.queryTextAreaId}" rows="20">${this.defaultQuery}</textarea></br>
+        <input id="${this.submitButtonId}" type="submit" value="Send"/>
         <label>Results Format: </label>
         <select id="${this.resultSelectId}">
           <option value="graph">Graph</option>
           <option value="table">Table</option>
           <option value="json">JSON</option>
-          <option value="timeline">Timeline</option>
         </select>
       </form>
       <hr/>
       <div id="${this.dataViewId}"/>`;
+  }
+
+  get defaultQuery() {
+    return `# Common prefixes
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX gml:  <http://www.opengis.net/gml#>
+PREFIX gmlowl:  <http://www.opengis.net/ont/gml#>
+PREFIX units: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX xlink: <http://www.w3.org/1999/xlink#>
+
+# CityGML 2.0 prefixes
+PREFIX core: <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/core#>
+PREFIX bldg: <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/building#>
+PREFIX brid: <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/bridge#>
+PREFIX luse: <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/landuse#>
+PREFIX app:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/appearance#>
+PREFIX dem:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/relief#>
+PREFIX frn:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/cityfurniture#>
+PREFIX gen:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/generics#>
+PREFIX grp:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/cityobjectgroup#>
+PREFIX tex:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/texturedsurface#>
+PREFIX tun:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/tunnel#>
+PREFIX veg:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/vegetation#>
+PREFIX wtr:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/waterbody#>
+
+# Workspace prefixes
+PREFIX vers: <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/3.0/versioning#>
+PREFIX wksp:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/Workspace/3.0/workspace#>
+PREFIX type: <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/Workspace/3.0/transactiontypes#>
+
+# Dataset prefixes
+PREFIX data: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2009-2018_Workspace#>
+PREFIX v2009: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2009_stripped_split#>
+PREFIX v2012: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2012_stripped_split#>
+PREFIX v2015: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2015_stripped_split#>
+PREFIX v2018: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2018_stripped_split#>
+
+
+# Return all features (with types) within a version
+
+SELECT ?subject ?subjectType ?predicate ?object ?objectType
+WHERE {
+  ?subject a core:CityModel ;
+    ?predicate ?object .
+  ?subject a ?subjectType .
+  ?object a bldg:Building .
+  ?object a ?objectType .
+  data:version_2018 vers:Version.versionMember ?object .
+  
+  FILTER(?subjectType != owl:NamedIndividual)
+  FILTER(?objectType != owl:NamedIndividual)
+}
+
+LIMIT 30`;
   }
 
   get dataViewId() {
@@ -206,20 +251,28 @@ LIMIT 100`;
     return document.getElementById(this.formId);
   }
 
+  get querySelectId() {
+    return `${this.windowId}_query_select`;
+  }
+
+  get querySelect() {
+    return document.getElementById(this.querySelectId);
+  }
+
   get resultSelectId() {
-    return `${this.windowId}_resultSelect`;
+    return `${this.windowId}_result_select`;
   }
 
   get resultSelect() {
     return document.getElementById(this.resultSelectId);
   }
 
-  get queryButtonId() {
-    return `${this.windowId}_query_button`;
+  get submitButtonId() {
+    return `${this.windowId}_submit_button`;
   }
 
-  get queryButton() {
-    return document.getElementById(this.queryButtonId);
+  get submitButton() {
+    return document.getElementById(this.submitButtonId);
   }
 
   get queryTextAreaId() {
