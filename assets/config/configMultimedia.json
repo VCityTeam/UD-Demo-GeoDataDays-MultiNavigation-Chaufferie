@@ -1,16 +1,30 @@
 {
     "multimedia-data":{
-        "content-1" :{
+      "photos" :[
+        {
           "lock" : false,
           "position" :{
-            "x" : "1842080.0088028954",
-            "y" : "5174466.312225383",
-            "z" : "220"
+            "x" : "1845828.1286318363",
+            "y" : "5177486.72939238",
+            "z" : "194.61960784313726"
           },
-          "imgThumbnail":"./assets/img/fourviere-5-1024x597.png",
-          "imgContent":"./assets/img/fourviere-5-1024x597.png",
-          "text": "Photo test",
+          "imgThumbnail":"./assets/img/chaufferiePhoto1.jpg",
+          "imgContent":"./assets/img/chaufferiePhoto1.jpg",
+          "text": "Chaufferie la Doua",
+          "src":""
+        },
+        {
+          "lock" : false,
+          "position" :{
+            "x" : "1845986.7413700784",
+            "y" : "5177653.31743202",
+            "z" : "194.61960784313726"
+          },
+          "imgThumbnail":"./assets/img/chaufferiePhoto2.jpg",
+          "imgContent":"./assets/img/chaufferiePhoto2.jpg",
+          "text": "Chaufferie la Doua",
           "src":""
         }
+      ]
     }
 }

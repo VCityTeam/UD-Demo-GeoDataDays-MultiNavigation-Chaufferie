@@ -38,15 +38,6 @@ export class MultiMediaVisualizer {
   createPin(multimediaObject, imgThumbnail){
     let pictureTexture;
     pictureTexture = new THREE.TextureLoader().load(imgThumbnail);
-    //Pins object
-    const pinsTexture = new THREE.TextureLoader().load('./assets/img/1200px-Google_Maps_pin.svg.png');
-    const pinsMaterial = new THREE.SpriteMaterial( { map: pinsTexture, sizeAttenuation : false  } );
-    const pinsSprite = new THREE.Sprite( pinsMaterial );
-    const scale = 10000; // Need this scale to reduce the size of the Sprite object in the scene wich is to big
-    pinsSprite.position.set(multimediaObject.position.x, multimediaObject.position.y, multimediaObject.position.z); 
-    pinsSprite.scale.set(60/scale, 100/scale, 1/scale );
-    pinsSprite.updateMatrixWorld();
-    pinsSprite.name = this.name;
 
     //Picture on the top
     const pictureMaterial = new THREE.SpriteMaterial( { map: pictureTexture, sizeAttenuation : true  } );
@@ -54,17 +45,35 @@ export class MultiMediaVisualizer {
     pictureSprite.userData = { multimediaObject: multimediaObject };
 
     // pictureSprite.
-    pictureSprite.position.set(pinsSprite.position.x, pinsSprite.position.y, pinsSprite.position.z + 230); 
+    pictureSprite.position.set(multimediaObject.position.x, multimediaObject.position.y, multimediaObject.position.z + 230); 
     
-    pictureSprite.scale.set(300 / 1, 250 / 1, 10 / 1);
+    pictureSprite.scale.set(300, 250, 10);
     pictureSprite.updateMatrixWorld();
     pictureSprite.name = this.name;
-          
-    //Add pins object in the scene
-    this.view3D.getScene().add(pinsSprite);
+
+    const material = new THREE.LineBasicMaterial({
+      color: 'black'
+    });
+    
+    const points = [];
+    points.push( new THREE.Vector3( 
+      multimediaObject.position.x,
+      multimediaObject.position.y,
+      multimediaObject.position.z ) );
+
+    points.push( new THREE.Vector3( 
+      multimediaObject.position.x,
+      multimediaObject.position.y,
+      multimediaObject.position.z + 230 ) );
+    
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+    const line = new THREE.Line( geometry, material );
+
+    this.view3D.getScene().add( line ); 
     this.view3D.getScene().add(pictureSprite);
 
-    return [pictureSprite, pinsSprite];    
+    return pictureSprite;    
   }
 
   // Create HMTL div to visualize details of the episode container
@@ -93,6 +102,7 @@ export class MultiMediaVisualizer {
       },
       false
     );
+    this.disableView('episodeWindowVideo');
     divInteractiveContent.hidden = true;
     
   }
@@ -106,22 +116,12 @@ export class MultiMediaVisualizer {
       const element = this.listContents[index];
       let pinObjets = this.createPin(element, element.imgThumbnail);
       this.visibility = visibility;
-      pinObjets[0].visible = visibility;
-      pinObjets[1].visible = visibility;
-      this.pictureObjects.push(pinObjets[0]);
-      this.pinsSprite.push(pinObjets[1]);
+      pinObjets.visible = visibility;
+      this.pictureObjects.push(pinObjets);
     }
   }
 
-  onDocumentMouseClick( event ) {    
-    event.preventDefault();
-    let raycaster =  new udviz.THREE.Raycaster();
-    let mouse3D = new udviz.THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1,   
-      -( event.clientY / window.innerHeight ) * 2 + 1,  
-      0.5 ); 
-      console.log('view3D');                                       
-    raycaster.setFromCamera( mouse3D, this.view3D.getCamera() );
-   
+  selectMultimediaObject( raycaster ) {    
     let intersects = raycaster.intersectObjects( this.getPinsObject() );
     if ( intersects.length > 0 ){
       intersects.forEach(elementIntersect => {

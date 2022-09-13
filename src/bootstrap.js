@@ -72,17 +72,34 @@ app.start('../assets/config/config.json').then((config) => {
 
 
     ///// MULTIMEDIA MODULE
-    let multimedia1 = new MultiMediaObject(configMultimedia['multimedia-data']['content-1'], false);
+    let photosJson = configMultimedia['multimedia-data']['photos'];
     let listMultimedia = [];
-    let multimediaObjectList = []
-    listMultimedia.push(multimedia1);
-    const multimediaVisu = new MultiMediaVisualizer('content 1', app.view3D, listMultimedia);
+    let multimediaObjectList = [];
+
+    //Create all Multimedia object
+    for (let photo of photosJson){
+      let multimedia = new MultiMediaObject(photo, false);
+      listMultimedia.push(multimedia);
+    }
+    
+    const multimediaVisu = new MultiMediaVisualizer('photo', app.view3D, listMultimedia);
     multimediaVisu.constructAllContent(true);
     Array.prototype.push.apply(multimediaObjectList, multimediaVisu.pictureObjects);
-    // multimediaVisu.constructHtml();
+    multimediaVisu.constructHtml();
 
-    // app.view3D.html().addEventListener( 'click', multimediaVisu.onDocumentMouseClick );
+    //Set event for interactive object
+    app.view3D.html().addEventListener( 'click', onDocumentMouseClick );
 
+    function onDocumentMouseClick(event){
+      event.preventDefault();
+      let raycaster =  new udviz.THREE.Raycaster();
+      let mouse3D = new udviz.THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1,   
+        -( event.clientY / window.innerHeight ) * 2 + 1,  
+        0.5 );                                       
+      raycaster.setFromCamera( mouse3D, app.view3D.getCamera() );
+      multimediaVisu.selectMultimediaObject(raycaster);
+    }
+    
     ////// SPARQL MODULE
     const sparqlModule = new SparqlModule(
       app.config,
