@@ -44,9 +44,7 @@ export class MultiMediaVisualizer {
     const pictureSprite = new THREE.Sprite( pictureMaterial );
     pictureSprite.userData = { multimediaObject: multimediaObject };
 
-    // pictureSprite.
     pictureSprite.position.set(multimediaObject.position.x, multimediaObject.position.y, multimediaObject.position.z + 230); 
-    debugger;
     pictureSprite.scale.set(380, 210, 1);
     pictureSprite.updateMatrixWorld();
     pictureSprite.name = this.name;
@@ -72,8 +70,6 @@ export class MultiMediaVisualizer {
 
     this.view3D.getScene().add( line ); 
     this.view3D.getScene().add(pictureSprite);
-
-    
 
     return pictureSprite;    
   }
