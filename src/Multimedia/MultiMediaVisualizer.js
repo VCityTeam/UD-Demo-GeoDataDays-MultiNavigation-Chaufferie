@@ -33,21 +33,21 @@ export class MultiMediaVisualizer {
 
   /**
      * Function who add Sprite object in the scene to create Pins and 
-     * @param {THREE.Vector3} position coordinate of your pins in ud-viz scene
+     * 
     */
   createPin(multimediaObject, imgThumbnail){
     let pictureTexture;
     pictureTexture = new THREE.TextureLoader().load(imgThumbnail);
-
     //Picture on the top
     const pictureMaterial = new THREE.SpriteMaterial( { map: pictureTexture, sizeAttenuation : true  } );
+    pictureMaterial.clipIntersection = true;
     const pictureSprite = new THREE.Sprite( pictureMaterial );
     pictureSprite.userData = { multimediaObject: multimediaObject };
 
     // pictureSprite.
     pictureSprite.position.set(multimediaObject.position.x, multimediaObject.position.y, multimediaObject.position.z + 230); 
-    
-    pictureSprite.scale.set(300, 250, 10);
+    debugger;
+    pictureSprite.scale.set(380, 210, 1);
     pictureSprite.updateMatrixWorld();
     pictureSprite.name = this.name;
 
@@ -59,7 +59,7 @@ export class MultiMediaVisualizer {
     points.push( new THREE.Vector3( 
       multimediaObject.position.x,
       multimediaObject.position.y,
-      multimediaObject.position.z ) );
+      160 ) );
 
     points.push( new THREE.Vector3( 
       multimediaObject.position.x,
@@ -72,6 +72,8 @@ export class MultiMediaVisualizer {
 
     this.view3D.getScene().add( line ); 
     this.view3D.getScene().add(pictureSprite);
+
+    
 
     return pictureSprite;    
   }
