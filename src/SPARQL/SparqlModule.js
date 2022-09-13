@@ -16,7 +16,7 @@ export class SparqlModule {
    * @param {string} config.sparqlModule.url The SPARQL endpoint url.
    * @param {LayerManager} layerManager The UD-Viz LayerManager.
    */
-  constructor(config, layerManager, view) {
+  constructor(config, layerManager) {
     this.config = config;
 
     /**

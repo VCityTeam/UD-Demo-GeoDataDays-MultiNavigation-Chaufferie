@@ -84,7 +84,12 @@ export class SparqlQueryWindow extends Window {
    * @param {SparqlEndpointService} service The SPARQL endpoint service.
    */
   windowCreated() {
+    this.toggleQueryTextAreaButton.onclick = () => this.toggleQueryTextArea();
+
+    this.querySelect.onchange = () => this.updateQueryTextArea(this.querySelect.value);
+
     this.form.onsubmit = () => {
+      console.log('submit');
       this.sparqlProvider.querySparqlEndpointService(this.queryTextArea.value);
       return false;
     };
@@ -103,12 +108,20 @@ export class SparqlQueryWindow extends Window {
         'gml_id',
         URI.tokenizeURI(node_text).id
       );
-      let tilesManagerAndcityObject = this.cityObjectProvider.pickCityObjectByBatchTablePatch(
+      let tilesManagerAndcityObject = this.cityObjectProvider.pickCityObjectByBatchTable(
         'gml_id',
         URI.tokenizeURI(node_text).id
       )
-      if (tilesManagerAndcityObject && tilesManagerAndcityObject[1]) {
-        focusCameraOn(this.layerManager.view, this.layerManager.view.controls, tilesManagerAndcityObject[1].centroid);
+      if (tilesManagerAndcityObject) {
+        focusCameraOn(
+          this.layerManager.view,
+          this.layerManager.view.controls,
+          tilesManagerAndcityObject[1].centroid,
+          {
+            verticalDistance: 200,
+            horizontalDistance: 200
+          }
+        );
       }
     });
 
@@ -171,45 +184,86 @@ export class SparqlQueryWindow extends Window {
     this.dataView.style['overflow'] = 'auto';
   }
 
+  toggleQueryTextArea() {
+    if (this.queryTextArea.style.display == 'none') {
+      this.queryTextArea.style.display = 'inherit';
+      this.toggleQueryTextAreaButton.textContent = 'ᐁ';
+    } else {
+      this.queryTextArea.style.display = 'none';
+      this.toggleQueryTextAreaButton.textContent = 'ᐊ';
+    }
+  }
+
+  updateQueryTextArea(value) {
+    switch (value) {
+      case 'versionQuery':
+        this.queryTextArea.textContent = this.defaultQueryPrefixes + this.versionQuery;
+        break;
+      case 'buildingByIDQuery':
+        this.queryTextArea.textContent = this.defaultQueryPrefixes + this.buildingByIDQuery;
+        break;
+      case 'ifcSlabQuery':
+        this.queryTextArea.textContent = this.defaultQueryPrefixes + this.ifcSlabQuery;
+        break;
+      case 'ifcSlabCountQuery':
+        this.queryTextArea.textContent = this.defaultQueryPrefixes + this.ifcSlabCountQuery;
+        break;
+      case 'ifcSlabByIDQuery':
+        this.queryTextArea.textContent = this.defaultQueryPrefixes + this.ifcSlabByIDQuery;
+        break;
+      default:
+        console.warn(`Query select dropdown value: ${value} is not recognized`)
+        this.queryTextArea.textContent = this.defaultQueryPrefixes + this.defaultQuery;
+        break;
+    }
+  }
+
   // SPARQL Window getters //
   get innerContentHtml() {
     return /*html*/ `
-    <label>Select Query: </label>
-      <select id="${this.querySelectId}">
-      <option value="search">Feature Search</option>
-        <option value="versions">Versions</option>
-        <option value="custom">Custom</option>
-      </select>
-      <hr/>
-      <form id=${this.formId}>
-        <label for="${this.queryTextAreaId}">Query:</label></br>
-        <textarea id="${this.queryTextAreaId}" rows="20">${this.defaultQuery}</textarea></br>
-        <input id="${this.submitButtonId}" type="submit" value="Send"/>
-        <label>Results Format: </label>
-        <select id="${this.resultSelectId}">
-          <option value="graph">Graph</option>
-          <option value="table">Table</option>
-          <option value="json">JSON</option>
+      <div class="box-section">
+        <label>Select Query: </label>
+        <select id="${this.querySelectId}">
+          <option value="versionQuery">Select Buildings from Version</option>
+          <option value="buildingByIDQuery">Select Building by ID</option>
+          <option value="ifcSlabQuery">Select Ifc Slabs from Building</option>
+          <option value="ifcSlabCountQuery">Count Ifc Slabs in Building</option>
+          <option value="ifcSlabByIDQuery">Select Ifc Slab by ID</option>
         </select>
-      </form>
-      <hr/>
-      <div id="${this.dataViewId}"/>`;
+        <button id="${this.toggleQueryTextAreaButtonId}">ᐊ</button>
+        <form id=${this.formId}>
+          <textarea id="${this.queryTextAreaId}" rows="20">${this.defaultQueryPrefixes}${this.defaultQuery}</textarea>
+          <input id="${this.submitButtonId}" type="submit" value="Send"/>
+          <label>Results Format: </label>
+          <select id="${this.resultSelectId}">
+            <option value="graph">Graph</option>
+            <option value="table">Table</option>
+            <option value="json">JSON</option>
+          </select>
+        </form>
+      </div>
+      <div id="${this.dataViewId}" class="box-selection"/>`;
   }
 
-  get defaultQuery() {
+  get defaultQueryPrefixes() {
     return `# Common prefixes
-PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl:  <http://www.w3.org/2002/07/owl#>
-PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX gml:  <http://www.opengis.net/gml#>
-PREFIX gmlowl:  <http://www.opengis.net/ont/gml#>
-PREFIX units: <http://www.opengis.net/def/uom/OGC/1.0/>
-PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
-PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
-PREFIX xlink: <http://www.w3.org/1999/xlink#>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:    <http://www.w3.org/2002/07/owl#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX list:   <https://w3id.org/list#>
+PREFIX skos:   <http://www.w3.org/2004/02/skos/core#>
+PREFIX gml:    <http://www.opengis.net/gml#>
+PREFIX gmlowl: <http://www.opengis.net/ont/gml#>
+PREFIX units:  <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX geo:    <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:   <http://www.opengis.net/def/function/geosparql/>
+PREFIX strdf:  <http://strdf.di.uoa.gr/ontology#>
+PREFIX xlink:  <http://www.w3.org/1999/xlink#>
+
+# IFC2x3 Prefixes
+PREFIX express: <https://w3id.org/express#>
+PREFIX ifc:     <http://standards.buildingsmart.org/IFC/DEV/IFC2x3/TC1/OWL#>
 
 # CityGML 2.0 prefixes
 PREFIX core: <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/core#>
@@ -226,32 +280,103 @@ PREFIX tun:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontolo
 PREFIX veg:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/vegetation#>
 PREFIX wtr:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/waterbody#>
 
-# Workspace prefixes
+# Versioning prefixes
 PREFIX vers: <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/3.0/versioning#>
-PREFIX wksp:  <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/Workspace/3.0/workspace#>
 PREFIX type: <https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/Workspace/3.0/transactiontypes#>
 
 # Dataset prefixes
-PREFIX data: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2009-2018_Workspace#>
+PREFIX vt:    <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2009-2018_Workspace#>
+PREFIX inst:  <https://raw.githubusercontent.com/VCityTeam/Datasets/ifc_doua#>
 PREFIX v2009: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2009_stripped_split#>
 PREFIX v2012: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2012_stripped_split#>
 PREFIX v2015: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2015_stripped_split#>
 PREFIX v2018: <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2018_stripped_split#>
+`;
+  }
 
+  get defaultQuery() {
+    return this.versionQuery;
+  }
 
+  get versionQuery() {
+    return `
 # Return all features (with types) within a version
 
 SELECT ?subject ?subjectType ?predicate ?object ?objectType
 WHERE {
   ?subject a core:CityModel ;
-    ?predicate ?object .
-  ?subject a ?subjectType .
+    ?predicate ?object ;
+    a ?subjectType .
   ?object a bldg:Building .
   ?object a ?objectType .
-  data:version_2012 vers:Version.versionMember ?object .
+  vt:version_2018 vers:Version.versionMember ?object .
   
   FILTER(?subjectType != owl:NamedIndividual)
   FILTER(?objectType != owl:NamedIndividual)
+}
+
+LIMIT 30`;
+  }
+  get buildingByIDQuery() {
+    return `
+# return a CityGML Building matching an ID
+
+SELECT ?subject ?subjectType ?predicate ?object ?objectType
+WHERE {
+  ?subject ?predicate ?object ;
+    a ?subjectType ;
+    skos:prefLabel ?id .
+
+  OPTIONAL { ?object a ?objectType }
+
+  FILTER(?id = "VILLEURBANNE_00187_8")
+
+  FILTER(?subjectType != owl:NamedIndividual)
+  FILTER(?objectType != owl:NamedIndividual)
+}
+
+LIMIT 30`;
+  }
+
+  get ifcSlabQuery() {
+    return `
+# return all IFC Slabs (with types)
+
+SELECT ?subject ?subjectType ?predicate ?object ?objectType
+WHERE {
+  ?subject  a  ifc:IfcSlab ;
+    a ?subjectType ;
+    ?predicate ?object .
+  OPTIONAL { ?object a ?objectType }
+}
+
+LIMIT 30`;
+  }
+
+  get ifcSlabCountQuery() {
+    return `
+# return number of IFC Slabs in the dataset
+
+SELECT (COUNT(?ifcSlab) AS ?NumOfIfcSlab)
+WHERE {
+  ?ifcSlab a ifc:IfcSlab .
+}
+
+LIMIT 30`;
+  }
+
+  get ifcSlabByIDQuery() {
+    return `
+# return an IFC Slab matching an ID
+
+SELECT ?subject ?subjectType ?predicate ?object ?objectType
+WHERE {
+  ?subject  a  ifc:IfcSlab ;
+    a ?subjectType ;
+    ?predicate ?object ;
+    ifc:globalId_IfcRoot ?id .
+  ?id express:hasString "2Q4QvRyEvCrefpeva98EMR" .
+  OPTIONAL { ?object a ?objectType }
 }
 
 LIMIT 30`;
@@ -303,5 +428,13 @@ LIMIT 30`;
 
   get queryTextArea() {
     return document.getElementById(this.queryTextAreaId);
+  }
+
+  get toggleQueryTextAreaButtonId() {
+    return `${this.windowId}_toggle_query_text_area_button`
+  }
+
+  get toggleQueryTextAreaButton() {
+    return document.getElementById(this.toggleQueryTextAreaButtonId);
   }
 }

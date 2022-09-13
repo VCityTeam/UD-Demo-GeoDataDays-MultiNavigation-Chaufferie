@@ -7,9 +7,8 @@ export class CityObjectProviderPatch extends CityObjectProvider {
   }
 
   selectCityObjectByBatchTable(key, value) {
-    let tileManagerAndCityObject = this.pickCityObjectByBatchTablePatch(key, value);
-    // let cityObject = this.layerManager.pickCityObjectByBatchTable(key, value)[1];
-    if (tileManagerAndCityObject && tileManagerAndCityObject[1]) {
+    let tileManagerAndCityObject = this.pickCityObjectByBatchTable(key, value);
+    if (tileManagerAndCityObject) {
       let cityObject = tileManagerAndCityObject[1]
       if (this.selectedCityObject != cityObject) {
         if (this.selectedCityObject) {
@@ -43,12 +42,10 @@ export class CityObjectProviderPatch extends CityObjectProvider {
         });
         this.removeLayer();
       }
-    } else {
-      console.warn('WARNING: cityObject not found with key, value pair: ' + key + ', ' + value);
     }
   }
 
-  pickCityObjectByBatchTablePatch(batchTableKey, batchTableValue) {
+  pickCityObjectByBatchTable(batchTableKey, batchTableValue) {
     for (let tilesManager of this.layerManager.tilesManagers) {
       if (tilesManager.tiles){
         for (let tile of tilesManager.tiles) {
@@ -64,6 +61,7 @@ export class CityObjectProviderPatch extends CityObjectProvider {
         }
       }
     }
+    console.warn('WARNING: cityObject not found with key, value pair: ' + batchTableKey + ', ' + batchTableValue);
     return undefined;
   }
 }

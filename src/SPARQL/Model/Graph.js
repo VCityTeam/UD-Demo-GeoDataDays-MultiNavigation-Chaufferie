@@ -16,12 +16,60 @@ export class Graph {
     this.window = window;
     this.height = height;
     this.width = width;
-    this.namespaces = [];
+    this.typeList = [];
     this.svg = d3
       .create('svg')
       .attr('class', 'd3_graph')
       .attr('viewBox', [0, 0, this.width, this.height])
       .style('display', 'hidden');
+    // TODO: add prefixes dynamically using user query definitions 
+    this.knownPrefixes = new Map([
+      // Common prefixes
+      ['http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'rdf'],
+      ['http://www.w3.org/2000/01/rdf-schema#', 'rdfs'],
+      ['http://www.w3.org/2002/07/owl#', 'owl'],
+      ['http://www.w3.org/2001/XMLSchema#', 'xsd'],
+      ['https://w3id.org/list#', 'list'],
+      ['http://www.w3.org/2004/02/skos/core#', 'skos'],
+      ['http://www.opengis.net/gml#', 'gml'],
+      ['http://www.opengis.net/ont/gml#', 'gmlowl'],
+      ['http://www.opengis.net/def/uom/OGC/1.0/', 'units'],
+      ['http://www.opengis.net/ont/geosparql#', 'geo'],
+      ['http://www.opengis.net/def/function/geosparql/', 'geof'],
+      ['http://strdf.di.uoa.gr/ontology#', 'strdf'],
+      ['http://www.w3.org/1999/xlink#', 'xlink'],
+      
+      // IFC2x3 Prefixes 
+      ['https://w3id.org/express#', 'express'],
+      ['http://standards.buildingsmart.org/IFC/DEV/IFC2x3/TC1/OWL#', 'ifc'],
+      
+      // CityGML 2.0 prefixes
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/core#', 'core'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/building#', 'bldg'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/bridge#', 'brid'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/landuse#', 'luse'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/appearance#', 'app'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/relief#', 'dem'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/cityfurniture#', 'frn'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/generics#', 'gen'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/cityobjectgroup#', 'grp'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/texturedsurface#', 'tex'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/tunnel#', 'tun'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/vegetation#', 'veg'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/waterbody#', 'wtr'],
+      
+      // Versioning prefixes
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/3.0/versioning#', 'vers'],
+      ['https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/Workspace/3.0/transactiontypes#', 'type'],
+      
+      // Dataset prefixes
+      ['https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2009-2018_Workspace#', 'vt'],
+      ['https://raw.githubusercontent.com/VCityTeam/Datasets/ifc_doua#', 'inst'],
+      ['https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2009_stripped_split#', 'v2009'],
+      ['https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2012_stripped_split#', 'v2012'],
+      ['https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2015_stripped_split#', 'v2015'],
+      ['https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2018_stripped_split#', 'v2018'],
+    ]);
   }
 
   /// Data Functions ///
@@ -39,7 +87,7 @@ export class Graph {
     const legend = data.legend;
     const setColor = function (d, default_color, override_color = undefined) {
       if (override_color && data.colorSetOrScale) return override_color;
-      if (data.colorSetOrScale) return data.colorSetOrScale(d);
+      else if (data.colorSetOrScale) return data.colorSetOrScale(d);
       return default_color;
     };
 
@@ -88,11 +136,13 @@ export class Graph {
         node_label.filter((e, j) => {
           return d.index == j;
         })
-          .style('fill', 'white');
+          .style('fill', 'white')
+          .style('opacity', '1');
         link_label.filter((e, j) => {
           return d.index == e.source.index || d.index == e.target.index;
         })
-          .style('fill', 'white');
+          .style('fill', 'white')
+          .style('opacity', '1');
         this.window.sendEvent(Graph.EVENT_NODE_MOUSEOVER, event.path[0].textContent);
       })
       .on('mouseout', (event, d) => {
@@ -101,11 +151,13 @@ export class Graph {
         node_label.filter((e, j) => {
           return d.index == j;
         })
-          .style('fill', 'grey');
+          .style('fill', 'grey')
+          .style('opacity', '0.5');
         link_label.filter((e) => {
           return d.index == e.source.index || d.index == e.target.index;
         })
-          .style('fill', 'grey');
+          .style('fill', 'grey')
+          .style('opacity', '0.5');
           this.window.sendEvent(Graph.EVENT_NODE_MOUSEOUT, event.path[0].textContent);
       })
       .call(this.drag(simulation));
@@ -121,10 +173,13 @@ export class Graph {
         return uri.id;
       })
       .style('text-anchor', 'middle')
-      .style('fill', 'grey')
       .style('font-family', 'Arial')
       .style('font-size', 10.5)
       .style('text-shadow', '1px 1px black')
+      .style('fill', 'grey')
+      .style('opacity', '0.5')
+      // .style('fill', 'white')
+      // .style('visibility', 'hidden')
       .attr('class','node_label')
       .call(this.drag(simulation));
       
@@ -137,10 +192,13 @@ export class Graph {
         return label.id;
       })
       .style('text-anchor', 'middle')
-      .style('fill', 'grey')
       .style('font-family', 'Arial')
       .style('font-size', 10)
       .style('text-shadow', '1px 1px black')
+      .style('fill', 'grey')
+      .style('opacity', '0.5')
+      // .style('fill', 'white')
+      // .style('visibility', 'hidden')
       .attr('class','link_label')
       .call(this.drag(simulation));
 
@@ -228,82 +286,100 @@ export class Graph {
       },
       colorSetOrScale: d3.scaleOrdinal(d3.schemeCategory10)
     };
-
-    for (let triple of data.results.bindings) {
-      /* If the query is formatted using subject, subjectType, predicate, object,
-         and objectType variables the node color based on the namespace of the subject
-         or object's respective type */
-      if (triple.subject && triple.subjectType && triple.predicate
-          && triple.object && triple.objectType) {
-        if ( // if the subject doesn't exist yet 
-          graphData.nodes.find((n) => n.id == triple.subject.value) == undefined
-        ) {
-          let subjectNamespaceId = this.getNamespaceIndex(
-            triple.subjectType.value
-          );
-          let node = { id: triple.subject.value, color_id: subjectNamespaceId };
-          graphData.nodes.push(node);
+    
+    if (data.head.vars.includes("subject") && data.head.vars.includes("predicate") && data.head.vars.includes("object")) {
+      if (data.head.vars.includes("subjectType") && data.head.vars.includes("objectType")) {
+        /* If the query is formatted using subject, subjectType, predicate, object,
+           and objectType variables the node color based on the type of the subject
+           or object's respective type */
+        for (let triple of data.results.bindings) {
+          if ( // if the subject doesn't exist yet 
+            graphData.nodes.find((n) => n.id == triple.subject.value) == undefined
+          ) {
+            let subjectTypeId = this.getNodeColorId(
+              triple.subjectType.value
+            );
+            let node = { id: triple.subject.value, color_id: subjectTypeId };
+            graphData.nodes.push(node);
+          }
+          if (// if the object doesn't exist yet
+            graphData.nodes.find((n) => n.id == triple.object.value) == undefined
+          ) {
+            let objectTypeId;
+            if (// if there is an objectType
+              triple.objectType
+            ) {
+              objectTypeId = this.getNodeColorId(triple.objectType.value);
+            } else { // if not color it black
+              objectTypeId = undefined;
+            }
+            let node = { id: triple.object.value, color_id: objectTypeId };
+            graphData.nodes.push(node);
+          }
+          let link = {
+            source: triple.subject.value,
+            target: triple.object.value,
+            label: triple.predicate.value,
+          };
+          graphData.links.push(link);
+          graphData.legend.title = 'Legend';
+          graphData.legend.content = this.typeList;
         }
-        if (// if the object doesn't exist yet
-          graphData.nodes.find((n) => n.id == triple.object.value) == undefined
-        ) {
-          let objectNamespaceId = this.getNamespaceIndex(triple.objectType.value);
-          let node = { id: triple.object.value, color_id: objectNamespaceId };
-          graphData.nodes.push(node);
-        }
-        let link = {
-          source: triple.subject.value,
-          target: triple.object.value,
-          label: triple.predicate.value,
-        };
-        graphData.links.push(link);
-        graphData.legend.title = 'Namespaces';
-        graphData.legend.content = this.namespaces;
-      } else if (triple.subject && triple.predicate && triple.object) {
+      } else {
         /* If the query is formatted using just subject, predicate, and object,
            variables the node color is left black */
-        if ( // if the subject doesn't exist yet 
-          graphData.nodes.find((n) => n.id == triple.subject.value) == undefined
-        ) {
-          let node = { id: triple.subject.value, color_id: undefined };
-          graphData.nodes.push(node);
+        for (let triple of data.results.bindings) {
+          if ( // if the subject doesn't exist yet 
+            graphData.nodes.find((n) => n.id == triple.subject.value) == undefined
+          ) {
+            let node = { id: triple.subject.value, color_id: undefined };
+            graphData.nodes.push(node);
+          }
+          if (// if the object doesn't exist yet
+            graphData.nodes.find((n) => n.id == triple.object.value) == undefined
+          ) {
+            let node = { id: triple.object.value, color_id: undefined };
+            graphData.nodes.push(node);
+          }
+          let link = {
+            source: triple.subject.value,
+            target: triple.object.value,
+            label: triple.predicate.value,
+          };
+          graphData.links.push(link);
+          graphData.legend.title = '';
+          graphData.colorSetOrScale = undefined;
         }
-        if (// if the object doesn't exist yet
-          graphData.nodes.find((n) => n.id == triple.object.value) == undefined
-        ) {
-          let node = { id: triple.object.value, color_id: undefined };
-          graphData.nodes.push(node);
-        }
-        let link = {
-          source: triple.subject.value,
-          target: triple.object.value,
-          label: triple.predicate.value,
-        };
-        graphData.links.push(link);
-        graphData.legend.title = 'Legend';
-        graphData.colorSetOrScale = undefined;
       }
-      else {
-        console.warn('Unrecognized endpoint response format for graph construction');
-      }
+    } else {
+      console.warn('Unrecognized endpoint response format for graph construction');
     }
+
     console.debug(graphData);
     return graphData;
   }
   /**
-   * Get the namespace index of a uri. Add the namespace to the array of namespaces
+   * Get the color ID of a uri. Add the uri to the type array
    * if it does not exist.
-   * @param {String} uri the uri to map to a namespace.
+   * @param {String} uri the uri to map to a color id.
    * @return {Number}
    */
-  getNamespaceIndex(uri) {
-    let namespace = tokenizeURI(uri).namespace;
-    if (!this.namespaces.includes(namespace)) {
-      this.namespaces.push(namespace);
+  getNodeColorId(uri) {
+    let tURI = tokenizeURI(uri);
+    let prefixedId = uri;
+    for (let prefix of this.knownPrefixes.entries()) {
+      if (prefix[0] == tURI.namespace) {
+        prefixedId = `${prefix[1]}:${tURI.id}`;
+      }
     }
-    return this.namespaces.findIndex((d) => d == namespace);
-  }
 
+    if (!this.typeList.includes(prefixedId)) {
+      this.typeList.push(prefixedId);
+    }
+    return this.typeList.findIndex((d) => d == prefixedId);
+  }
+  "https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/core#"
+  "https://raw.githubusercontent.com/VCityTeam/UD-Graph/master/Ontologies/CityGML/2.0/core#"
   /**
    * Hide the graph SVG
    */
@@ -324,7 +400,7 @@ export class Graph {
   clear() {
     this.svg.selectAll('g').remove();
     this.svg.selectAll('text').remove();
-    this.namespaces = [];
+    this.typeList = [];
   }
 
   /// Interface Functions ///
