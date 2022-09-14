@@ -329,7 +329,7 @@ WHERE {
 
   OPTIONAL { ?object a ?objectType }
 
-  FILTER(?id = "VILLEURBANNE_00187_8")
+  FILTER(?id = "VILLEURBANNE_00012_23")
 
   FILTER(?subjectType != owl:NamedIndividual)
   FILTER(?objectType != owl:NamedIndividual)
