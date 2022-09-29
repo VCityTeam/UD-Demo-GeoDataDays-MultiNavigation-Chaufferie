@@ -9,11 +9,11 @@ import { SparqlModule } from './SPARQL/SparqlModule';
 
 const app = new udviz.Templates.AllWidget();
 
-app.start('../assets/config/config.json').then((config) => {
+app.start('/assets/config/config.json').then((config) => {
 
 
   udviz.Components.SystemUtils.File.loadJSON(
-    '../assets/config/configMultimedia.json'
+    '/assets/config/configMultimedia.json'
   ).then(function (configMultimedia){
 
     ////// REQUEST SERVICE
