@@ -40,7 +40,7 @@ docker compose up
 ```
 
 Next load graph data into Strabon. The docker image volume is automatically loaded with the relevant data files for the demo, however they need to be manually loaded into the Strabon database itself (automation will be implemented eventually for this step). To upload these files into Strabon to be used by the sparqlModule:
-1. Open a web browser and navigate to [https://demo.liris.cnrs.fr/vcity/geodatadays/strabon/](https://demo.liris.cnrs.fr/vcity/geodatadays/strabon/)
+1. Open a web browser and navigate to [http://localhost:8001/strabon/](http://localhost:8001/strabon/)
 2. From the left menu, click *Explore/Modify operations* then *Store*
 3. Copy and paste the first filepath below into the *URI Input* field and click *Store from URI*. Repeat this process for each filepath
    1. `file:///DOUA_BATI_2009_stripped_split.rdf`
@@ -52,3 +52,5 @@ Next load graph data into Strabon. The docker image volume is automatically load
    - ⚠️ You may be asked to enter the Strabon administrative credentials here. However, these credentials currently cannot be changed from the `.env` file. See issue [#1](https://github.com/VCityTeam/UD-Demo-Graph-SPARQL/issues/1).
    - Also note that some of these files are quite large and may take a while to load so be patient. A successfully uploaded file should read "Data stored successfully!" at the top of the interface unless there is a **504 Gateway Time-out** error. If there is a timeout error refer to the docker logs from the strabon container searching for the line `STORE was successful` to confirm the dataset was successfully uploaded.
    - ![image](https://user-images.githubusercontent.com/23373264/193312585-402e87ec-ccc3-48cd-a200-b26d17fe2554.png)
+
+The demo can be open by navigating to [http://localhost:8000](http://localhost:8000)
