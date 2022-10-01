@@ -102,6 +102,7 @@
   "helpWindow": {
     "htmlPaths": [
       "../assets/html/contribute.html",
+      "../assets/html/dataExplorerUserGuide.html",
       "../assets/html/camera.html"
     ]
   },
