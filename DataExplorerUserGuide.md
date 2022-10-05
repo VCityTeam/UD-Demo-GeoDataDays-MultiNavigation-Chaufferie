@@ -25,15 +25,15 @@ Queries are written in [SPARQL](https://www.w3.org/TR/sparql11-query/)
 ### Select Result Visualization Format
 Use this dropdown menu to select how the query result will be visualized. Currently 3 modes are supported:
 1. Graph
-2. Table
+2. Table (with filter and search support)
 3. JSON (Primarily intended for debugging purposes)
 
-Not every query can be visualized by the Graph mode. Here is a list of which queries are supported by the graph visualization mode:
+Not every query can be visualized by the Graph mode. Here is a list of which queries are supported by the graph visualization mode and what additional funcionalities the graph view can offer :
 
-| Query | Graph Support |
-|---|---|
-| Select Buildings from Version | 🟢 |
-| Select Building by ID | 🟢 |
-| Select Ifc Slabs from Building | 🟢 |
-| Count Ifc Slabs in Building | 🔴 |
-| Select Ifc Slab by ID | 🟢 |
+| Query | Graph Support | Features |
+|---|---|---|
+| Select Buildings from Version | 🟢 | <li>Mouseover a Building node will highlight its corresponding 3D geometry in the scene</li><li>Clicking on a Building node will focus the camera on its corresponding 3D geometry in the scene</li> |
+| Select Building by ID | 🟢 |  |
+| Select Ifc Slabs from Building | 🟢 |  |
+| Count Ifc Slabs in Building | 🔴 |  |
+| Select Ifc Slab by ID | 🟢 |  |
