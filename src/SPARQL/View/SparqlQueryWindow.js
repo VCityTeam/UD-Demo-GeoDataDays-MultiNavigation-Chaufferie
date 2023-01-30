@@ -108,15 +108,15 @@ export class SparqlQueryWindow extends Window {
         'gml_id',
         URI.tokenizeURI(node_text).id
       );
-      let tilesManagerAndcityObject = this.cityObjectProvider.pickCityObjectByBatchTable(
+      let cityObject = this.cityObjectProvider.pickCityObjectByBatchTable(
         'gml_id',
         URI.tokenizeURI(node_text).id
       )
-      if (tilesManagerAndcityObject) {
+      if (cityObject) {
         focusCameraOn(
           this.layerManager.view,
           this.layerManager.view.controls,
-          tilesManagerAndcityObject[1].centroid,
+          cityObject.centroid,
           {
             verticalDistance: 200,
             horizontalDistance: 200
@@ -224,7 +224,7 @@ export class SparqlQueryWindow extends Window {
       <div class="box-section">
         <label>Select Query: </label>
         <select id="${this.querySelectId}">
-          <option value="versionQuery">Select Buildings from Version</option>
+          <option value="versionQuery">Select Buildings from Version (2018)</option>
           <option value="buildingByIDQuery">Select Building by ID</option>
           <option value="ifcSlabQuery">Select Ifc Slabs from Building</option>
           <option value="ifcSlabCountQuery">Count Ifc Slabs in Building</option>

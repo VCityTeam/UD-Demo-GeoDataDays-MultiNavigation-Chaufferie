@@ -128,7 +128,7 @@ export class Graph {
       .attr('stroke', (d) => setColor(d.color_id, '#ddd', '#111'))
       .attr('fill', (d) => setColor(d.color_id, 'black'))
       .on('click', (event) => {
-        this.window.sendEvent(Graph.EVENT_NODE_CLICKED, event.path[0].textContent);
+        this.window.sendEvent(Graph.EVENT_NODE_CLICKED, event.target.textContent);
       })
       .on('mouseover', (event, d) => {
         event.target.style['stroke'] = setColor(nodes[d.index].color_id, 'white', 'white');
@@ -143,7 +143,7 @@ export class Graph {
         })
           .style('fill', 'white')
           .style('opacity', '1');
-        this.window.sendEvent(Graph.EVENT_NODE_MOUSEOVER, event.path[0].textContent);
+        this.window.sendEvent(Graph.EVENT_NODE_MOUSEOVER, event.target.textContent);
       })
       .on('mouseout', (event, d) => {
         event.target.style['stroke'] = setColor(nodes[d.index].color_id, '#ddd', '#111');
@@ -158,7 +158,7 @@ export class Graph {
         })
           .style('fill', 'grey')
           .style('opacity', '0.5');
-          this.window.sendEvent(Graph.EVENT_NODE_MOUSEOUT, event.path[0].textContent);
+          this.window.sendEvent(Graph.EVENT_NODE_MOUSEOUT, event.target.textContent);
       })
       .call(this.drag(simulation));
       
