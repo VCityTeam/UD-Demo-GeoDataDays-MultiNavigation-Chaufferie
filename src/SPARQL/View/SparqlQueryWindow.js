@@ -320,21 +320,30 @@ LIMIT 30`;
   get buildingByIDQuery() {
     return `
 # return a CityGML Building matching an ID
-
 SELECT ?subject ?subjectType ?predicate ?object ?objectType
 WHERE {
-  ?subject ?predicate ?object ;
-    a ?subjectType ;
-    skos:prefLabel ?id .
-
-  OPTIONAL { ?object a ?objectType }
-
-  FILTER(?id = "VILLEURBANNE_00012_23")
-
+  {
+    ?subject ?predicate ?object ;
+      a ?subjectType ;
+      skos:prefLabel "VILLEURBANNE_00012_23" .
+  
+    OPTIONAL { ?object a ?objectType }
+  } UNION {
+    <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2012_stripped_split#VILLEURBANNE_00012_23> bldg:AbstractBuilding.boundedBy ?subject .
+    ?subject ?predicate ?object ;
+      a ?subjectType .
+  
+    OPTIONAL { ?object a ?objectType }
+  } UNION {
+    <https://github.com/VCityTeam/UD-Graph/DOUA_BATI_2012_stripped_split#VILLEURBANNE_00012_23> bldg:AbstractBuilding.boundedBy/geo:hasGeometry ?subject .
+    ?subject ?predicate ?object ;
+      a ?subjectType .
+  
+    OPTIONAL { ?object a ?objectType }
+  }
   FILTER(?subjectType != owl:NamedIndividual)
   FILTER(?objectType != owl:NamedIndividual)
 }
-
 LIMIT 30`;
   }
 
