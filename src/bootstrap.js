@@ -71,10 +71,10 @@ app.start('../assets/config/config.json').then((config) => {
     app.addModuleView('temporal', temporalModule.view);
 
 
-    ///// MULTIMEDIA MODULE
-    let photosJson = configMultimedia['multimedia-data']['photos'];
-    let listMultimedia = [];
-    let multimediaObjectList = [];
+    // ///// MULTIMEDIA MODULE
+    // let photosJson = configMultimedia['multimedia-data']['photos'];
+    // let listMultimedia = [];
+    // let multimediaObjectList = [];
 
     // //Create all Multimedia object
     // for (let photo of photosJson){
